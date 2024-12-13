@@ -1,5 +1,35 @@
 <?php require_once "validador_acesso.php" ?>
 
+<?php
+//chamados
+$chamados = array();
+$arquivo = fopen('arquivo.txt', 'r');
+$i = -1;
+$chamado_dados = array();
+while (!feof($arquivo)) {
+  $i++;
+  $registro = fgets($arquivo);
+  $chamados[] = $registro;
+
+  if ($chamados[$i] == '') {
+    continue;
+  }
+
+  $id_registro = explode('#', $chamados[$i]);
+
+  if ($_SESSION['perfil_id'] == 2) {
+    if ($_SESSION['id'] != $id_registro[0]) {
+      continue;
+    }
+  }
+
+  $chamado_dados[] = explode('#', $chamados[$i]);
+}
+
+fclose($arquivo);
+
+?>
+
 <html>
 
 <head>
@@ -42,24 +72,17 @@
 
           <div class="card-body">
 
-            <div class="card mb-3 bg-light">
-              <div class="card-body">
-                <h5 class="card-title">Título do chamado...</h5>
-                <h6 class="card-subtitle mb-2 text-muted">Categoria</h6>
-                <p class="card-text">Descrição do chamado...</p>
+            <?php foreach ($chamado_dados as $chamado) { ?>
 
+              <div class="card mb-3 bg-light">
+                <div class="card-body">
+                  <h5 class="card-title"><?= $chamado[1] ?></h5>
+                  <h6 class="card-subtitle mb-2 text-muted"><?= $chamado[2]; ?></h6>
+                  <p class="card-text"><?= $chamado[3]; ?></p>
+                </div>
               </div>
-            </div>
 
-            <div class="card mb-3 bg-light">
-              <div class="card-body">
-                <h5 class="card-title">Título do chamado...</h5>
-                <h6 class="card-subtitle mb-2 text-muted">Categoria</h6>
-                <p class="card-text">Descrição do chamado...</p>
-
-              </div>
-            </div>
-
+            <?php } ?>
             <div class="row mt-5">
               <div class="col-6">
                 <a class="btn btn-lg btn-warning btn-block" href="home.php">Voltar</a>
